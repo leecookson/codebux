@@ -6,6 +6,7 @@ var EventEmitter = require('events').EventEmitter;
 var complexityCost = require('./lib/complexity');
 
 module.exports = function (dir, cb) {
+    dir = path.resolve(dir);
     var emitter = new EventEmitter;
     
     var total = 0;

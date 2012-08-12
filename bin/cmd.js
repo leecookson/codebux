@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var codebux = require('../');
 var dir = process.argv[2] || process.cwd();
 var path = require('path');
