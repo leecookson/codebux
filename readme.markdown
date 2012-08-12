@@ -1,9 +1,9 @@
 # codebux
 
-This module computes technical debt for node programs.
+This program computes technical debt for node programs.
 
-Lines of code are spent. You start at $100. You don't get any more codebux. You
-can only lose codebux by fucking up somehow. There are many ways to fuck up:
+Lines of code are spent. You start at $100. You don't get any more codebux.
+There are many ways to fuck up:
 
 * too much code
 * too much indentation

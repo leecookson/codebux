@@ -31,7 +31,7 @@ module.exports = function (dir, cb) {
         walk(file, function () {
             emitter.emit('end');
         });
-    }.bind(null, require.resolve(dir + '/')));
+    }.bind(null, require.resolve(/\.js$/.test(dir) ? dir : dir + '/')));
     
     var walked = {};
     
