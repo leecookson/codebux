@@ -10,8 +10,8 @@ var s = codebux(dir, function (err, total) {
     else console.log(Array(50).join('—') + '\n' + formatPrice(total))
 });
 
-s.on('price', function (price, desc) {
-    console.log(formatPrice(price) + '  # ' + desc);
+s.on('file', function (price, file) {
+    console.log(formatPrice(price) + '  # ' + file);
 });
 
 function formatPrice (n) {

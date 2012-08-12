@@ -38,16 +38,18 @@ module.exports = function (dir, cb) {
     
     function walk (file, fn) {
         walked[file] = true;
-        emitter.emit('file', file);
         
         fs.readFile(file, 'utf8', function (err, src) {
             if (err) return emitter.emit('error', err);
             
             var rel = path.relative(dir, file);
             var costs = complexityCost(src);
-            Object.keys(costs).sort().forEach(function (key) {
+            
+            var sum = Object.keys(costs).sort().reduce(function (acc, key) {
                 record(costs[key], key + ' cost for ' + rel);
-            });
+                return acc + costs[key];
+            }, 0);
+            emitter.emit('file', sum, rel);
             
             var deps = detective.find(src);
             
