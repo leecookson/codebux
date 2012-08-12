@@ -13,10 +13,11 @@ s.on('price', function (price, desc) {
 });
 
 function formatPrice (n) {
-    var s = String(Math.abs(n)).replace(/(\.\d{,2}|)$/, function (_, x) {
-        return ('.' + (x || '') + '00').slice(0,3);
-    });
+    var s = String(Math.abs(n));
+    if (!/\./.test(s)) s += '.';
+    s += '00';
+    s = s.replace(/(\.\d{2})\d+/, '$1');
     return (n >= 0 ? '+' : '-')
-        + Array(Math.max(2, 8 - s.length)).join(' ') + s
+        + Array(Math.max(2, 10 - s.length)).join(' ') + s
     ;
 }
