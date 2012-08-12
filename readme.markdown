@@ -5,7 +5,9 @@ This module computes technical debt for node programs.
 Lines of code are spent. You start at $100. You don't get any more codebux. You
 can only lose codebux by fucking up somehow. There are many ways to fuck up:
 
-* having too much code
+* too much code
+* too much indentation
+* too much nested state
 * not having tests
 * not having a readme
 * not having examples
