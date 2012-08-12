@@ -9,6 +9,8 @@ if (process.argv.length === 2) {
     return console.error('usage: codebux [file or directory]');
 }
 
+console.log(formatPrice(100) + '  # initial stipend');
+
 var s = codebux(dir, function (err, total) {
     if (err) console.error(err)
     else console.log(Array(50).join('—') + '\n' + formatPrice(total))

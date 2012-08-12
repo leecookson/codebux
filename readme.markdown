@@ -12,6 +12,32 @@ You lose codebux for:
 Your codebux score doesn't stop at $0, it keeps going down into the negative
 numbers.
 
+# example
+
+For instance codebux itself has a score of:
+
+```
+$ codebux ~/projects/codebux
++   100.00  # initial stipend
+-     5.63  # index.js
+-     1.94  # lib/complexity.js
+—————————————————————————————————————————————————
++    92.42
+```
+
+other projects don't fare as well:
+
+```
+$ codebux ~/projects/node-browserify
++   100.00  # initial stipend
+-    12.55  # index.js
+-    34.91  # lib/wrap.js
+-     0.33  # lib/wrappers.js
+-   100.32  # lib/watch.js
+—————————————————————————————————————————————————
+-    48.12
+```
+
 # usage
 
 ```

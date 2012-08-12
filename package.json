@@ -1,0 +1,33 @@
+{
+    "name" : "codebux",
+    "version" : "0.0.0",
+    "description" : "calculate technical debt",
+    "main" : "index.js",
+    "bin" : {
+        "codebux": "bin/cmd.js"
+    },
+    "dependencies" : {
+        "falafel" : "~0.1.1",
+        "detective" : "~0.2.0",
+        "resolve" : "~0.2.2"
+    },
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/substack/codebux.git"
+    },
+    "homepage" : "https://github.com/substack/codebux",
+    "keywords" : [
+        "debt",
+        "philosophy",
+        "craft",
+        "code",
+        "lint",
+        "linter"
+    ],
+    "author" : {
+        "name" : "James Halliday",
+        "email" : "mail@substack.net",
+        "url" : "http://substack.net"
+    },
+    "license" : "MIT"
+}
