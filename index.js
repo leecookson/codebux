@@ -49,9 +49,13 @@ module.exports = function (dir, cb) {
                 record(costs[key], key + ' cost for ' + rel);
                 return acc + costs[key];
             }, 0);
-            emitter.emit('file', sum, rel);
             
             var deps = detective.find(src);
+            deps.expressions.forEach(function (s) {
+                record(-10, 'require(expr) in ' + rel);
+            });
+            
+            emitter.emit('file', sum, rel);
             
             var ds = deps.strings
                 .filter(function (s) { return /^[\.\/]/.test(s) })
