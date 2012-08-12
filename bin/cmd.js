@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
 var codebux = require('../');
-var dir = process.argv[2] || process.cwd();
+var dir = process.argv[2];
 var path = require('path');
 var Stream = require('stream');
+
+if (process.argv.length === 2) {
+    return console.error('usage: codebux [file or directory]');
+}
 
 var s = codebux(dir, function (err, total) {
     if (err) console.error(err)
