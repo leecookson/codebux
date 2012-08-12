@@ -1,29 +1,22 @@
 var codebux = require('../');
 var dir = process.argv[2] || process.cwd();
+var path = require('path');
 var Stream = require('stream');
-
-var priceStream = new Stream;
-priceStream.writable = true;
-priceStream.write = function (rec) {
-    var p = formatPrice(rec.price);
-    console.log(
-        Array(10 - p.length).join(' ')
-        + p + '  # ' + rec.description
-    );
-};
-priceStream.end = function () {};
-priceStream.destroy = function () {};
 
 var s = codebux(dir, function (err, total) {
     if (err) console.error(err)
-    else console.log('\ntotal: ' + formatPrice(total))
+    else console.log(Array(50).join('—') + '\n' + formatPrice(total))
 });
-s.pipe(priceStream);
+
+s.on('price', function (price, desc) {
+    console.log(formatPrice(price) + '  # ' + desc);
+});
 
 function formatPrice (n) {
-    return (n >= 0 ? '+' : '') + String(n)
-        .replace(/(\.\d{,2}|)$/, function (_, x) {
-            return ('.' + (x || '') + '00').slice(0,3);
-        })
+    var s = String(Math.abs(n)).replace(/(\.\d{,2}|)$/, function (_, x) {
+        return ('.' + (x || '') + '00').slice(0,3);
+    });
+    return (n >= 0 ? '+' : '-')
+        + Array(Math.max(2, 8 - s.length)).join(' ') + s
     ;
 }

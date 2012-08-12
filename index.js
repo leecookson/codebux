@@ -1,49 +1,67 @@
 var detective = require('detective');
+var resolve = require('resolve');
 var fs = require('fs');
 var path = require('path');
-var Stream = require('stream');
+var EventEmitter = require('events').EventEmitter;
+var complexityCost = require('./lib/complexity');
 
 module.exports = function (dir, cb) {
-    var stream = new Stream;
-    stream.readable = true;
+    var emitter = new EventEmitter;
     
     var total = 0;
     
     if (typeof cb === 'function') {
-        stream.once('error', function (err) {
+        emitter.once('error', function (err) {
             cb(err);
         });
         
-        stream.on('end', function () {
+        emitter.on('end', function () {
             cb(null, total);
         });
     }
     
     function record (price, desc) {
         total += price;
-        stream.emit('data', {
-            price : price,
-            description : desc,
-            total : total
+        emitter.emit('price', price, desc);
+        emitter.emit('total', total);
+    }
+    
+    process.nextTick(function (file) {
+        record(100, 'initial stipend');
+        walk(file, function () {
+            emitter.emit('end');
+        });
+    }.bind(null, require.resolve(dir + '/')));
+    
+    var walked = {};
+    
+    function walk (file, fn) {
+        walked[file] = true;
+        emitter.emit('file', file);
+        
+        fs.readFile(file, function (err, src) {
+            if (err) return emitter.emit('error', err);
+            
+            var rel = path.relative(dir, file);
+            record(complexityCost(src), 'complexity cost for ' + rel);
+            
+            var deps = detective.find(src);
+            
+            var ds = deps.strings
+                .filter(function (s) { return /^[\.\/]/.test(s) })
+                .map(function (s) {
+                    return resolve.sync(s, {
+                        basedir : path.dirname(file)
+                    });
+                })
+                .filter(function (s) { return !walked[s] })
+            ;
+            (function next () {
+                if (ds.length === 0) fn()
+                else walk(ds.shift(), next);
+            })();
         });
     }
     
-    process.nextTick(function () {
-        record(100, 'initial stipend');
-    });
-    
-    var pending = 0;
-    (function walk (file) {
-        pending ++;
-        fs.readFile(file, function (err, src) {
-            if (err) return stream.emit('error', err);
-            
-            var deps = detective(src);
-            console.dir(deps);
-            
-            if (--pending === 0) stream.emit('end');
-        });
-    })(require.resolve(dir + '/'));
-    
-    return stream;
+    return emitter;
 };
