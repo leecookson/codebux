@@ -66,7 +66,7 @@ each file along the way.
 
 # events
 
-## s.on('price', fucntion (price, desc) { ... })
+## s.on('price', function (price, desc) { ... })
 
 Emitted when a price gets computed, including the description of the price.
 
