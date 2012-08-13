@@ -85,10 +85,17 @@ module.exports = function (dirs, cb) {
             var ds = deps.strings
                 .filter(function (s) { return /^[\.\/]/.test(s) })
                 .map(function (s) {
-                    return resolve.sync(s, {
-                        basedir : path.dirname(file)
-                    });
+                    try {
+                        return resolve.sync(s, {
+                            basedir : path.dirname(file)
+                        });
+                    }
+                    catch (err) {
+                        emitter.emit('error', err + ' in file ' + file);
+                        return;
+                    }
                 })
+                .filter(Boolean)
                 .filter(function (s) { return !walked[s] })
             ;
             (function next () {
