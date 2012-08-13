@@ -11,9 +11,16 @@ if (process.argv.length === 2) {
 
 console.log(formatPrice(100) + '  # initial stipend');
 
-var s = codebux(dir, function (err, total) {
-    if (err) console.error(err)
-    else console.log(Array(50).join('—') + '\n' + formatPrice(total))
+var s = codebux(dir);
+
+var errors = [];
+
+s.on('end', function (total) {
+    console.log(Array(50).join('—') + '\n' + formatPrice(total))
+});
+
+s.on('error', function (err) {
+    console.error('# error: ' + err);
 });
 
 s.on('file', function (price, file) {

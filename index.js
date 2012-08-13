@@ -10,28 +10,30 @@ module.exports = function (dir, cb) {
     dir = path.resolve(dir);
     var emitter = new EventEmitter;
     
-    var total = 0;
+    emitter.total = 0;
     
     if (typeof cb === 'function') {
+        var gotErrors = false;
         emitter.once('error', function (err) {
+            gotErrors = true;
             cb(err);
         });
         
         emitter.on('end', function () {
-            cb(null, total);
+            if (!gotErrors) cb(null, emitter.total);
         });
     }
     
     function record (price, desc) {
-        total += price;
+        emitter.total += price;
         emitter.emit('price', price, desc);
-        emitter.emit('total', total);
+        emitter.emit('total', emitter.total);
     }
     
     process.nextTick(function (file) {
         record(100, 'initial stipend');
         walk(file, function () {
-            emitter.emit('end');
+            emitter.emit('end', emitter.total);
         });
     }.bind(null, require.resolve(/\.js$/.test(dir) ? dir : dir + '/')));
     
@@ -58,7 +60,9 @@ module.exports = function (dir, cb) {
             var deps = detective.find(src);
             
             deps.expressions.forEach(function (s) {
-                record(-10, 'require(expr) in ' + rel);
+                emitter.emit('error', 'expression: require(' + s + ')'
+                    + ' in file ' + file
+                );
             });
             
             emitter.emit('file', sum, rel);
