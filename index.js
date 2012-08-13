@@ -55,11 +55,13 @@ module.exports = function (dirs, cb) {
     var walked = {};
     
     function walk (file, fn) {
+        if (walked[file]) return fn();
         walked[file] = true;
         
         fs.readFile(file, 'utf8', function (err, src) {
             if (err) return emitter.emit('error', err);
             src = src.replace(/^#![^\n]*/, '');
+            src = '(function(){' + src + '})()';
             
             var e = syntaxError(src, file);
             if (e) return emitter.emit('error', e);
