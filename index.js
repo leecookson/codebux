@@ -75,6 +75,7 @@ module.exports = function (dirs, cb) {
             var deps = detective.find(src);
             
             deps.expressions.forEach(function (s) {
+                record(-10, 'require(' + s + ') in ' + rel);
                 emitter.emit('error', 'expression: require(' + s + ')'
                     + ' in file ' + file
                 );
@@ -92,6 +93,9 @@ module.exports = function (dirs, cb) {
                     }
                     catch (err) {
                         emitter.emit('error', err + ' in file ' + file);
+                        record(-100, 'path resolution error for '
+                            + s + ' in ' + rel
+                        );
                         return;
                     }
                 })
