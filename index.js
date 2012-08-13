@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
 var complexityCost = require('./lib/complexity');
+var syntaxError = require('syntax-error');
 
 module.exports = function (dir, cb) {
     dir = path.resolve(dir);
@@ -41,6 +42,10 @@ module.exports = function (dir, cb) {
         
         fs.readFile(file, 'utf8', function (err, src) {
             if (err) return emitter.emit('error', err);
+            src = src.replace(/^#![^\n]*/, '');
+            
+            var e = syntaxError(src, file);
+            if (e) return emitter.emit('error', e);
             
             var rel = path.relative(dir, file);
             var costs = complexityCost(src);
@@ -51,6 +56,7 @@ module.exports = function (dir, cb) {
             }, 0);
             
             var deps = detective.find(src);
+            
             deps.expressions.forEach(function (s) {
                 record(-10, 'require(expr) in ' + rel);
             });

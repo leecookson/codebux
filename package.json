@@ -9,7 +9,8 @@
     "dependencies" : {
         "falafel" : "~0.1.1",
         "detective" : "~0.2.0",
-        "resolve" : "~0.2.2"
+        "resolve" : "~0.2.2",
+        "syntax-error" : "~0.0.0"
     },
     "repository" : {
         "type" : "git",
