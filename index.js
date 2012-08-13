@@ -86,7 +86,9 @@ module.exports = function (dirs, cb) {
             emitter.emit('file', sum, rel);
             
             var ds = deps.strings
-                .filter(function (s) { return /^[\.\/]/.test(s) })
+                .filter(function (s) {
+                    return /^[\.\/]/.test(s) && !/\.json$/.test(s)
+                })
                 .map(function (s) {
                     try {
                         return resolve.sync(s, {
