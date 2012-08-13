@@ -5,9 +5,16 @@ var path = require('path');
 var EventEmitter = require('events').EventEmitter;
 var complexityCost = require('./lib/complexity');
 var syntaxError = require('syntax-error');
+var commondir = require('commondir');
 
-module.exports = function (dir, cb) {
-    dir = path.resolve(dir);
+module.exports = function (dirs, cb) {
+    if (!Array.isArray(dirs)) dirs = [ dirs ];
+    
+    dirs = dirs.map(function (d) {
+        return path.resolve(d);
+    });
+    var dir = commondir(dirs);
+    
     var emitter = new EventEmitter;
     
     emitter.total = 0;
@@ -30,12 +37,20 @@ module.exports = function (dir, cb) {
         emitter.emit('total', emitter.total);
     }
     
+    var files = dirs.map(function (d) {
+        return require.resolve(/\.js$/.test(d) ? d : d + '/')
+    });
+    
     process.nextTick(function (file) {
         record(100, 'initial stipend');
-        walk(file, function () {
-            emitter.emit('end', emitter.total);
-        });
-    }.bind(null, require.resolve(/\.js$/.test(dir) ? dir : dir + '/')));
+        
+        (function next () {
+            if (files.length === 0) {
+                emitter.emit('end', emitter.total);
+            }
+            else walk(files.shift(), next)
+        })();
+    });
     
     var walked = {};
     

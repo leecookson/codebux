@@ -1,17 +1,23 @@
 #!/usr/bin/env node
 
 var codebux = require('../');
-var dir = process.argv[2];
 var path = require('path');
 var Stream = require('stream');
 
-if (process.argv.length === 2) {
-    return console.error('usage: codebux [file or directory]');
+var dirs = process.argv.slice(2);
+if (dirs.length === 0) {
+    return console.error([
+        'usage: codebux [files or directories...]',
+        '',
+        'Recursively trace the static require() dependency graph for every file'
+        + 'or directory provided.',
+        ''
+    ].join('\n'));
 }
 
 console.log(formatPrice(100) + '  # initial stipend');
 
-var s = codebux(dir);
+var s = codebux(dirs);
 
 var errors = [];
 

@@ -41,7 +41,10 @@ $ codebux ~/projects/node-browserify
 # usage
 
 ```
-usage: codebux [file or directory]
+usage: codebux [files or directories...]
+
+Recursively trace the static require() dependency graph for every file or
+directory provided.
 ```
 
 # methods
